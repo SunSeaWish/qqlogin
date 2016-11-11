@@ -1,11 +1,11 @@
 #coding:utf8
-import os
 import subprocess
 import win32gui
 import time
 import win32api,win32con
 
-l=['~','!','@','#','$','%','^','&','*','(',')','_','+','{','}',':','"','|','<','>','?']
+l_only={';':186,'=':187,',':188,'-':189,'.':190,'/':191,'`':192,'[':219,"\\":220,']':221,"'":222}
+l_zh = {':':186,'+':187,'<':188,'_':189,'>':190,'?':191,'~':192,'{':219,'|':220,'}':221,'"':222}
 def putKeyBoard(str):
     for i in str:
         if i.isdigit():
@@ -21,21 +21,16 @@ def putKeyBoard(str):
             win32api.keybd_event(ord(i),0,win32con.KEYEVENTF_KEYUP,0)
             win32api.keybd_event(20,0,0,0)#Caps Lock
             win32api.keybd_event(20,0,win32con.KEYEVENTF_KEYUP,0)
+        elif i in l_only:
+            win32api.keybd_event(l_only[i],0,0,0)
+            win32api.keybd_event(l_only[i],0,win32con.KEYEVENTF_KEYUP,0)
+        elif i in l_zh:
+            win32api.keybd_event(win32con.VK_SHIFT,0,0,0)
+            win32api.keybd_event(l_zh[i],0,0,0)
+            win32api.keybd_event(l_zh[i],0,win32con.KEYEVENTF_KEYUP,0)
+            win32api.keybd_event(win32con.VK_SHIFT,0,win32con.KEYEVENTF_KEYUP,0)
         else:
-            pass
-            print '是特殊字符，跳过'
-        #特殊字符在win32con中判断，暂时只识别出来+,-,/,
-        # elif i in l:
-            # win32api.keybd_event(ord(i),0,0,0)
-            # win32api.keybd_event(ord(i),0,win32con.KEYEVENTF_KEYUP,0)
-            # win32api.keybd_event(win32con.VK_SHIFT,win32api.MapVirtualK5ey(win32con.VK_SHIFT,0),0,0)#shift
-            # win32api.keybd_event(134,0,0,0)
-            # win32api.keybd_event(134,0,win32con.KEYEVENTF_KEYUP,0)
-            # win32api.keybd_event(win32con.VK_SHIFT,win32api.MapVirtualKey(win32con.VK_SHIFT,0),win32con.KEYEVENTF_KEYUP,0)
-        # else:
-        #     print i,ord(i)
-        #     win32api.keybd_event(135,0,0,0)
-        #     win32api.keybd_event(135,0,win32con.KEYEVENTF_KEYUP,0)
+            print '特殊字符，跳过'
         time.sleep(0.5)
 
 if __name__=='__main__':
